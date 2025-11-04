@@ -5,17 +5,20 @@ import Spline from '@splinetool/react-spline';
 export default function Hero3D() {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], [0, -80]);
-  const opacity = useTransform(scrollY, [0, 400], [1, 0.7]);
+  const opacity = useTransform(scrollY, [0, 400], [1, 0.8]);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Background base to ensure dark aesthetic regardless of Spline scene background */}
+      <div className="absolute inset-0 bg-neutral-950 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
+
       {/* 3D Scene Layer */}
       <motion.div style={{ y, opacity }} className="absolute inset-0">
         {!failed && (
           <Spline
-            scene="https://prod.spline.design/igThmltzmqv5hkWo/scene.splinecode"
+            scene="https://prod.spline.design/Z4mFOe-VPbTX4W76/scene.splinecode"
             onLoad={() => setLoaded(true)}
             onError={() => setFailed(true)}
             style={{ width: '100%', height: '100%' }}
@@ -23,12 +26,12 @@ export default function Hero3D() {
         )}
         {/* Fallback background if Spline fails to load */}
         {failed && (
-          <div className="w-full h-full bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.25),transparent_60%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.2),transparent_60%)]" />
+          <div className="w-full h-full bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.18),transparent_60%)]" />
         )}
       </motion.div>
 
-      {/* Gradient overlay to improve contrast; pointer-events-none keeps 3D interactive */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/70 via-white/30 to-white dark:from-neutral-900/70 dark:via-neutral-900/30 dark:to-neutral-900" />
+      {/* Subtle vignette/gradient overlay for contrast; pointer-events-none keeps 3D interactive */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/10 dark:from-neutral-900/70 dark:via-neutral-900/20 dark:to-neutral-900/80" />
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
@@ -39,7 +42,7 @@ export default function Hero3D() {
           className="text-4xl md:text-6xl font-extrabold tracking-tight text-neutral-900 dark:text-white"
         >
           Grow smarter with
-          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-emerald-400"> AgriVision</span>
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-300"> AgriVision</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
