@@ -1,24 +1,36 @@
+import { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
 
 export default function Hero3D() {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], [0, -80]);
-  const opacity = useTransform(scrollY, [0, 400], [1, 0.6]);
+  const opacity = useTransform(scrollY, [0, 400], [1, 0.7]);
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* 3D Scene Layer */}
       <motion.div style={{ y, opacity }} className="absolute inset-0">
-        {/* 3D Scene */}
-        <Spline
-          scene="https://prod.spline.design/1m0c2yNRu8Ls8u3t/scene.splinecode"
-          style={{ width: '100%', height: '100%' }}
-        />
+        {!failed && (
+          <Spline
+            scene="https://prod.spline.design/igThmltzmqv5hkWo/scene.splinecode"
+            onLoad={() => setLoaded(true)}
+            onError={() => setFailed(true)}
+            style={{ width: '100%', height: '100%' }}
+          />
+        )}
+        {/* Fallback background if Spline fails to load */}
+        {failed && (
+          <div className="w-full h-full bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.25),transparent_60%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.2),transparent_60%)]" />
+        )}
       </motion.div>
 
-      {/* Gradient overlay to improve contrast; pointer-events-none so 3D remains interactive */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/60 via-white/20 to-white dark:from-neutral-900/70 dark:via-neutral-900/30 dark:to-neutral-900" />
+      {/* Gradient overlay to improve contrast; pointer-events-none keeps 3D interactive */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/70 via-white/30 to-white dark:from-neutral-900/70 dark:via-neutral-900/30 dark:to-neutral-900" />
 
+      {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -50,6 +62,13 @@ export default function Hero3D() {
             Explore features
           </a>
         </motion.div>
+
+        {/* Subtle loading hint overlay while the 3D scene initializes */}
+        {!loaded && !failed && (
+          <div className="pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 text-xs text-neutral-600 dark:text-neutral-400">
+            Initializing 3D scene…
+          </div>
+        )}
       </div>
     </section>
   );
